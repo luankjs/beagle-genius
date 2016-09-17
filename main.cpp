@@ -1,9 +1,11 @@
-#include "color_selector.h"
+#include "led.h"
 
 int main(int argc, char* argv[]) {
-  ColorSelector color_selector = ColorSelector(1);
+  LED led_verde = LED(50);
 
-  int analog_value = color_selector.getAnalogValue();
+  string direction = led_verde.getDirection();
+  string value = led_verde.getValue();
 
-  cout << "Valor: " << analog_value << endl;
+  cout << "Direção: " << direction << endl;
+  cout << "Valor: " << value << endl;
 }
