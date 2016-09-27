@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
     led_red.setValue(BlackLib::low);
     
     colors_seq.push_back(nextColor());
-    
+
     printSequence();
 
     highAll();
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
         }
       }
 
-      sleep(0.5);
+      sleep(1);
     }
 
     for (int i = 0; i < colors_seq.size(); ++i) {
