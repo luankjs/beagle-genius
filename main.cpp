@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
+#include <cstdio>
+#include <ctime>
 
 using namespace std;
 
@@ -13,7 +15,7 @@ BlackLib::BlackGPIO   led_green(BlackLib::GPIO_30, BlackLib::output, BlackLib::S
 BlackLib::BlackGPIO   button(BlackLib::GPIO_115, BlackLib::input, BlackLib::SecureMode);
 BlackLib::BlackGPIO   ledR(BlackLib::GPIO_50, BlackLib::output, BlackLib::SecureMode);
 BlackLib::BlackGPIO   ledG(BlackLib::GPIO_51, BlackLib::output, BlackLib::SecureMode);
-BlackLib::BlackGPIO   ledB(BlackLib::GPIO_4, BlackLib::output, BlackLib::SecureMode);
+BlackLib::BlackGPIO   ledB(BlackLib::GPIO_2, BlackLib::output, BlackLib::SecureMode);
 ColorSelector         color_selector = ColorSelector(1);
 vector<string> colors_seq;
 vector<string> colors_choosen;
@@ -31,8 +33,13 @@ void lowAll() {
   ledB.setValue(BlackLib::low);
 }
 
+void clearScreen() {
+  cout << string( 100, '\n' );
+}
+
 string nextColor() {
-  int number = rand()%(3-1)+1;
+  srand(time(NULL));
+  int number = rand()%(4-1);
 
   if (number == 1) {
     return "red";
@@ -40,11 +47,8 @@ string nextColor() {
   else if (number == 2) {
     return "green";
   }
-  else if (number == 3) {
-    return "blue";
-  }
   else {
-    return "red";
+    return "blue";
   }
 }
 
@@ -69,6 +73,8 @@ void printSequence() {
       ledB.setValue(BlackLib::high);
     }
     sleep(2);
+    lowAll();
+    sleep(1);
   }
 
   highAll();
@@ -77,6 +83,8 @@ void printSequence() {
 }
 
 int main(int argc, char* argv[]) {
+  clearScreen();
+
   status_player = "playing";
 
   while (status_player != "game_over") {
@@ -95,12 +103,16 @@ int main(int argc, char* argv[]) {
       if (button.getValue() == "1") {
         if (color_selector.getAnalogValue() >= 0 && color_selector.getAnalogValue() < 1333) {
           colors_choosen.push_back("red");
+          printf("Você escolheu vermelho!\n");
         } else if (color_selector.getAnalogValue() >= 1333 && color_selector.getAnalogValue() < 2666) {
           colors_choosen.push_back("green");
+          printf("Você escolheu verde!\n");
         } else if (color_selector.getAnalogValue() >= 2666 && color_selector.getAnalogValue() < 4000) {
           colors_choosen.push_back("blue");
+          printf("Você escolheu azul!\n");
         }
       } else {
+        printf("Escolha uma cor...\n");
         if (color_selector.getAnalogValue() >= 0 && color_selector.getAnalogValue() < 1333) {
           ledR.setValue(BlackLib::high);
           ledG.setValue(BlackLib::low);
@@ -126,6 +138,8 @@ int main(int argc, char* argv[]) {
     }
 
     if (status_player != "game_over") {
+      printf("Parabéns! Você acertou a sequência!! \n");
+      clearScreen();
       led_green.setValue(BlackLib::high);
       highAll();
       sleep(1);
